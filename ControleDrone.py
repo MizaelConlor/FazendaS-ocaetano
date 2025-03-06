@@ -17,7 +17,6 @@ SUBMENU_EDITAR_REGISTRO = "Editar Registro"
 MESES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
          "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
 TIPO_OPERACAO = ["Operação Aérea", "Operação Terrestre"]
-PAGINA_CONSULTAR_DADOS = "Consultar Dados"
 
 # --- Funções de utilidade ---
 
@@ -236,134 +235,6 @@ def exibir_barra_lateral():
             st.session_state.pagina_selecionada = PAGINA_FINANCEIRO
         if st.button("Gráficos"):  # Novo botão para a página de gráficos
             st.session_state.pagina_selecionada = PAGINA_GRAFICOS
-
-            #Botão para acessar aba de dados cadastrados e ter acesso a informçaões de operações e parâmetros de voo
-        if st.button("Consultar Dados"):
-            st.session_state.pagina_selecionada = PAGINA_CONSULTAR_DADOS  # Corrigido o nome da variável
-
-          
-       
-def exibir_pagina_consultar_dados():
-    """Exibe a página de Consultar Dados."""
-    st.header("Consultar Dados")
-
-    # Submenu para Parâmetros de Voo
-    if st.button("Parâmetros de Voo"):
-        st.session_state.submenu_consultar_dados = "Escolha Aeronave"
-
-    # Verifica qual submenu está ativo
-    submenu_ativo = st.session_state.get("submenu_consultar_dados", "")
-
-    if submenu_ativo == "Escolha Aeronave":
-        st.subheader("Escolha a Aeronave")
-
-        # Seleção da Aeronave
-        aeronave_selecionada = st.selectbox(
-            "Selecione a Aeronave",
-            ["Agrast10", "Agrast20p", "Agrast25", "Agrast40", "Agrast50"]
-        )
-
-        # Define as opções de Vazão e Cobertura Real com base na aeronave selecionada
-        if aeronave_selecionada:
-            st.session_state.aeronave_selecionada = aeronave_selecionada
-            st.session_state.submenu_consultar_dados = "Escolha Vazão e Cobertura Real"
-
-    if submenu_ativo == "Escolha Vazão e Cobertura Real":
-        st.subheader(f"Configurações para {st.session_state.aeronave_selecionada}")
-
-        # Seleção de Vazão e Cobertura Real
-        col1, col2 = st.columns(2)
-        with col1:
-            # Opções de Vazão com base na aeronave selecionada
-            if st.session_state.aeronave_selecionada == "Agrast10":
-                vazao_selecionada = st.selectbox("Selecione a Vazão", [5, 8])
-            elif st.session_state.aeronave_selecionada == "Agrast20p":
-                vazao_selecionada = st.selectbox("Selecione a Vazão", [8, 10, 12])
-            elif st.session_state.aeronave_selecionada == "Agrast25":
-                vazao_selecionada = st.selectbox("Selecione a Vazão", [10, 12, 15])
-            elif st.session_state.aeronave_selecionada == "Agrast40":
-                vazao_selecionada = st.selectbox("Selecione a Vazão", [12, 15, 18])
-            elif st.session_state.aeronave_selecionada == "Agrast50":
-                vazao_selecionada = st.selectbox("Selecione a Vazão", [15, 18, 20])
-        with col2:
-            # Opções de Cobertura Real com base na aeronave selecionada
-            if st.session_state.aeronave_selecionada == "Agrast10":
-                cobertura_real_selecionada = st.selectbox("Selecione a Cobertura Real (m)", [5,8])
-            elif st.session_state.aeronave_selecionada == "Agrast20p":
-                cobertura_real_selecionada = st.selectbox("Selecione a Cobertura Real (m)", [15, 20])
-            elif st.session_state.aeronave_selecionada == "Agrast25":
-                cobertura_real_selecionada = st.selectbox("Selecione a Cobertura Real (m)", [20, 25])
-            elif st.session_state.aeronave_selecionada == "Agrast40":
-                cobertura_real_selecionada = st.selectbox("Selecione a Cobertura Real (m)", [25, 30])
-            elif st.session_state.aeronave_selecionada == "Agrast50":
-                cobertura_real_selecionada = st.selectbox("Selecione a Cobertura Real (m)", [30, 35])
-
-        # Dados recomendados baseados na aeronave, vazão e cobertura real
-        parametros_recomendados = {
-            # Exemplo para Agrast10
-            ("Agrast10", 5, 10): {
-                "Velocidade": 100,
-                "Micras": 200,
-                "Produto Trabalhado": "",
-                "Altura": 10,
-                "Vento": 5,
-                "Temperatura": 25,
-            },
-            ("Agrast10", 5, 15): {
-                "Velocidade": 110,
-                "Micras": 210,
-                "Produto Trabalhado": "Herbicida B",
-                "Altura": 12,
-                "Vento": 6,
-                "Temperatura": 26,
-            },
-            ("Agrast10", 5, 15): {
-                "Velocidade": 110,
-                "Micras": 210,
-                "Produto Trabalhado": "Herbicida B",
-                "Altura": 12,
-                "Vento": 6,
-                "Temperatura": 26,
-            },
-        }
-
-        # Exibir os parâmetros recomendados em colunas verticais
-        chave_combinacao = (st.session_state.aeronave_selecionada, vazao_selecionada, cobertura_real_selecionada)
-        if chave_combinacao in parametros_recomendados:
-            st.subheader(f"Parâmetros Recomendados para {st.session_state.aeronave_selecionada}, Vazão {vazao_selecionada} e Cobertura Real {cobertura_real_selecionada}m")
-
-            # Container para melhorar o layout
-            with st.container():
-                # Divide a tela em duas colunas
-                col1, col2 = st.columns(2)
-
-                # Coluna 1: Nomes dos parâmetros
-                with col1:
-                    st.markdown("**Parâmetro**")
-                    st.markdown("Velocidade")
-                    st.markdown("Micras")
-                    st.markdown("Produto Trabalhado")
-                    st.markdown("Altura")
-                    st.markdown("Vento")
-                    st.markdown("Temperatura")
-
-                # Coluna 2: Valores dos parâmetros
-                with col2:
-                    st.markdown("**Valor**")
-                    st.markdown(f"{parametros_recomendados[chave_combinacao]['Velocidade']} km/h")
-                    st.markdown(f"{parametros_recomendados[chave_combinacao]['Micras']} µm")
-                    st.markdown(parametros_recomendados[chave_combinacao]["Produto Trabalhado"])
-                    st.markdown(f"{parametros_recomendados[chave_combinacao]['Altura']} m")
-                    st.markdown(f"{parametros_recomendados[chave_combinacao]['Vento']} m/s")
-                    st.markdown(f"{parametros_recomendados[chave_combinacao]['Temperatura']} °C")
-
-            # Adiciona um divisor visual
-            st.markdown("---")
-
-            # Adiciona um pequeno texto explicativo (opcional)
-            st.info("Os parâmetros acima são recomendados com base na combinação de Vazão e Cobertura Real selecionada, todos dados apresentados foram testados em campo com papel sensível à água TeeJet 20301-1N . Ajuste conforme necessário")
-        else:
-            st.warning("Combinação de aeronave, vazão e cobertura real não encontrada. Por favor, selecione outra combinação.")
 
 def exibir_pagina_registro():
     """Exibe a página de registro."""
@@ -733,9 +604,6 @@ def main():
         exibir_pagina_financeiro()
     elif st.session_state.pagina_selecionada == PAGINA_GRAFICOS:  # Nova condição para a página de gráficos
         exibir_pagina_graficos()
-    elif st.session_state.pagina_selecionada == PAGINA_CONSULTAR_DADOS:   
-         exibir_pagina_consultar_dados()
-        
 
 if __name__ == "__main__":
     main()
